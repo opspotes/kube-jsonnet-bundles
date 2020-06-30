@@ -5,15 +5,14 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   namespace:: 'kube-system',
   containerImage:: 'docker.io/amazon/aws-alb-ingress-controller',
   containerImageTag:: 'v1.1.6',
+  enableMonitoring:: true,
   ingressClass:: 'alb',
   clusterName:: error 'clusterName required',
   iamRoleArn:: error 'iamRoleArn required',
 
-  local labels = k.labels($.name, 'ingress'),
-
   metadata_:: {
     namespace: $.namespace,
-    labels: labels,
+    labels: k.labels($.name, 'ingress'),
   },
 
   local serviceAccount_ = k.ServiceAccount($.name) {
@@ -55,15 +54,43 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
         spec+: {
           serviceAccountName: serviceAccount_.metadata.name,
           containers_+: {
-            default: k.Container($.name) {
+            default: k.Container('alb-ingress-controller') {
               image: $.containerImage + ':' + $.containerImageTag,
               args: [
                 '--ingress-class=' + $.ingressClass,
                 '--cluster-name=' + $.clusterName,
               ],
+              ports_+: {
+                metrics: { containerPort: 10254 },
+              },
+              livenessProbe: {
+                httpGet: {
+                  path: '/healthz',
+                  port: 'metrics',
+                },
+                initialDelaySeconds: 30,
+                periodSeconds: 10,
+                timeoutSeconds: 1,
+              },
+              readinessProbe: self.livenessProbe {
+                timeoutSeconds: 3,
+              },
             },
           },
         },
+      },
+    },
+  },
+
+  local podMonitor_ = k.PodMonitor($.name) {
+    metadata+: $.metadata_,
+    spec+: {
+      podMetricsEndpoints: [{ interval: '10s', port: 'metrics', path: '/metrics' }],
+      namespaceSelector: {
+        matchNames: [$.namespace],
+      },
+      selector: {
+        matchLabels: $.metadata_.labels,
       },
     },
   },
@@ -72,4 +99,5 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   clusterRole: std.prune(clusterRole_),
   clusterRoleBinding: std.prune(clusterRoleBinding_),
   deployment: std.prune(deployment_),
+  podMonitor: if $.enableMonitoring then std.prune(podMonitor_),
 }
