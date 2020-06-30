@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/bitnami-labs/kube-libsonnet",
+          "subdir": ""
+        }
+      },
+      "version": "0e78b4332a893b7c1d03eefc84f9a2ef7d28b8ad",
+      "sum": "uRjIBw3Wjzf7YPwJ2MrSIf3mlMGeVX81GGSwG7ZVXzc="
+    }
+  ],
+  "legacyImports": false
+}
