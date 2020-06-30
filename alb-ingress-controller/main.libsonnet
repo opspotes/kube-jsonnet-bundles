@@ -6,7 +6,8 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   containerImage:: 'docker.io/amazon/aws-alb-ingress-controller',
   containerImageTag:: 'v1.1.6',
   ingressClass:: 'alb',
-  clusterName:: 'eks',
+  clusterName:: error 'clusterName required',
+  iamRoleArn:: error 'iamRoleArn required',
 
   local labels = k.labels($.name, 'ingress'),
 
@@ -17,7 +18,7 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
 
   local serviceAccount_ = k.ServiceAccount($.name) {
     metadata+: $.metadata_,
-  },
+  } + k.irsaAnnotation($.iamRoleArn),
 
   local clusterRole_ = k.ClusterRole($.name) {
     metadata+: $.metadata_ {

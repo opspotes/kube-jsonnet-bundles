@@ -8,7 +8,7 @@
     },
   },
 
-  eksSaAnnot(roleArn): $.annotation('eks.amazonaws.com/role-arn', roleArn),
+  irsaAnnotation(roleArn): $.annotation('eks.amazonaws.com/role-arn', roleArn),
 
   ingressWhitelistAnnot(ipRanges, ingressKey='ingress'): {
     [ingressKey]+: $.annotation('nginx.ingress.kubernetes.io/whitelist-source-range', std.join(',', ipRanges)),
