@@ -57,4 +57,8 @@
       },
     },
   },
+
+  // external-secrets
+
+  ExternalSecret(name): $._Object('kubernetes-client.io/v1', 'ExternalSecret', name),
 }
