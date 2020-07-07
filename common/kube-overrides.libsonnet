@@ -40,34 +40,6 @@
     },
   },
 
-  Ingress(name): super.Ingress(name) {
-    local this = self,
-
-    skipTls:: false,
-
-    spec: {
-      local spec = self,
-      rules_:: {},
-
-      rules: std.flattenArrays([
-        [
-          {
-            http: spec.rules_[name].http,
-            host: host,
-          }
-          for host in spec.rules_[name].hosts
-        ]
-        for name in std.objectFields(spec.rules_)
-        if spec.rules_[name] != null
-      ]),
-
-      tls: if !this.skipTls then [{
-        hosts: spec.rules_[name].hosts,
-        secretName: 'tls-' + $.hyphenate(name),
-      } for name in std.objectFields(spec.rules_) if spec.rules_[name] != null],
-    },
-  },
-
   Job(name): super.Job(name) {
     spec+: {
       completions: 1,
