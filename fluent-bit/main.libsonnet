@@ -43,8 +43,8 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
     metadata+: $.metadata_,
     data: {
       'fluent-bit.conf': importstr 'files/fluent-bit.conf',
-      'functions.lua': importstr 'files/functions.lua',
       'parsers.conf': importstr 'files/parsers.conf',
+      'pipeline.conf': importstr 'files/pipeline.conf',
     },
   },
 
