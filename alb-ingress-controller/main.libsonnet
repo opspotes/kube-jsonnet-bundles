@@ -5,7 +5,7 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   namespace:: 'kube-system',
   containerImage:: 'docker.io/amazon/aws-alb-ingress-controller',
   containerImageTag:: 'v1.1.6',
-  enableMonitoring:: true,
+  enablePodMonitor:: true,
   ingressClass:: 'alb',
   clusterName:: error 'clusterName required',
   iamRoleArn:: error 'iamRoleArn required',
@@ -99,5 +99,5 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   clusterRole: std.prune(clusterRole_),
   clusterRoleBinding: std.prune(clusterRoleBinding_),
   deployment: std.prune(deployment_),
-  podMonitor: if $.enableMonitoring then std.prune(podMonitor_),
+  podMonitor: if $.enablePodMonitor then std.prune(podMonitor_),
 }

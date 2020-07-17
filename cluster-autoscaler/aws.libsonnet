@@ -5,6 +5,7 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   namespace:: 'kube-system',
   containerImage:: 'eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler',
   containerImageTag:: 'v1.16.5',
+  enablePodMonitor:: true,
   awsRegion:: error 'awsRegion required',
   iamRoleArn:: error 'iamRoleArn required',
   clusterName:: error 'clusterName required',
@@ -207,5 +208,5 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   role: std.prune(role_),
   roleBinding: std.prune(roleBinding_),
   deployment: std.prune(deployment_),
-  podMonitor: std.prune(podMonitor_),
+  podMonitor: if $.enablePodMonitor then std.prune(podMonitor_),
 }

@@ -5,7 +5,7 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   namespace:: 'monitoring',
   containerImage:: 'fluent/fluent-bit',
   containerImageTag:: '1.4.6',
-  enableMonitoring:: true,
+  enablePodMonitor:: true,
 
   metadata_:: {
     namespace: $.namespace,
@@ -140,5 +140,5 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   clusterRoleBinding: std.prune(clusterRoleBinding_),
   config: std.prune(config_),
   daemonset: std.prune(daemonset_),
-  podMonitor: if $.enableMonitoring then std.prune(podMonitor_),
+  podMonitor: if $.enablePodMonitor then std.prune(podMonitor_),
 }

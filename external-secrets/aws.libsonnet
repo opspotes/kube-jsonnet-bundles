@@ -5,6 +5,7 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   namespace:: 'kube-system',
   containerImage:: 'godaddy/kubernetes-external-secrets',
   containerImageTag:: '4.0.0',
+  enablePodMonitor:: true,
   logLevel:: 'info',
   awsRegion:: error 'awsRegion required',
   iamRoleArn:: error 'iamRoleArn required',
@@ -126,5 +127,5 @@ local k = import 'kube-jsonnet-bundles/common/kube.libsonnet';
   clusterRoleBinding: std.prune(clusterRoleBinding_),
   clusterRoleBindingAuth: std.prune(clusterRoleBindingAuth_),
   deployment: std.prune(deployment_),
-  podMonitor: std.prune(podMonitor_),
+  podMonitor: if $.enablePodMonitor then std.prune(podMonitor_),
 }
